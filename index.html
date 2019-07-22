@@ -12,7 +12,19 @@
 angular.module('dragModule', [])
   .directive('myDraggable', ['$document', function($document) {
     return {
+   	  restrict: 'E',
+	  scope: {
+        data: '=info'
+      },
+	  controller: ['$scope', function MyTabsController($scope) {
+		var data = $scope.data = {init:
+		'd'};	
+	  }],
+	  template: function(){
+		return "D: {{data}}	<input type=\"text\" data-ng-model=\"data.init\" />";
+	  },
       link: function(scope, element, attr) {
+	  console.log(element);
         var startX = 0, startY = 0, x = 0, y = 0;
 
         element.css({
@@ -21,10 +33,15 @@ angular.module('dragModule', [])
          backgroundColor: 'lightgrey',
          cursor: 'pointer'
         });
-
+		
+		element.find('input').on('change',function(event){
+			console.log('change',event);
+			scope.test = 'change' + event.target.value
+		});
+		
         element.on('mousedown', function(event) {
           // Prevent default dragging of selected content
-          event.preventDefault();
+          //event.preventDefault();
           startX = event.pageX - x;
           startY = event.pageY - y;
           $document.on('mousemove', mousemove);
@@ -55,7 +72,16 @@ angular.module('dragModule', [])
   
 </head>
 <body ng-app="dragModule">
-  <span my-draggable>Drag Me</span>
+  <my-draggable info="v1">Drag Me {{data}}
+	<input type="text" 
+		data-ng-model="data"
+	/>
+  </my-draggable>
+  <my-draggable info="v2">Drag Me {{data}}
+	<input type="text" 
+		data-ng-model="data"		
+	/>
+  </my-draggable>
 </body>
 </html>
 
